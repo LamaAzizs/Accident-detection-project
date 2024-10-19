@@ -8,9 +8,9 @@ import numpy as np
 import google.generativeai as genai
 from dotenv import load_dotenv
 
-
 # Load the YOLO model
 model = YOLO('runs/detect/train15/weights/best.pt')
+# model = YOLO('best(1).pt')
 
 # Create "reports" and "report_images" folders if they don't exist
 if not os.path.exists('reports'):
@@ -87,10 +87,6 @@ def display_annotated_video(video_path, fps_reduction=4):
         st.error("Error: Could not open video.")
         return
     
-    # Get video properties
-    original_fps = int(cap.get(cv2.CAP_PROP_FPS))
-    new_fps = max(1, original_fps // fps_reduction)  # Reduce FPS
-    frame_time = 1.0 / new_fps  # Time to display each frame
 
     # Get total frames and define segment size
     total_frames = int(cap.get(cv2.CAP_PROP_FRAME_COUNT))
@@ -107,14 +103,16 @@ def display_annotated_video(video_path, fps_reduction=4):
 
         # Annotate frame
         height, width = frame.shape[:2]
-        new_width = 640
+        new_width = 480
         new_height = int(height * (new_width / width))
-        frame = cv2.resize(frame, (new_width, new_height))
+        frame_small = cv2.resize(frame, (new_width, new_height))
+       
 
-        results = model.predict(source=frame, conf=0.72)
+        results = model.predict(source=frame_small, conf=0.72, device= 0,imgsz= 640)
+       
+        
         annotated_frame = results[0].plot()  # Annotated frame
-
-        # Convert the frame to RGB
+        # annotated_frame = cv2.resize(annotated_frame, (new_width*2, new_height*2))
         frame_rgb = cv2.cvtColor(annotated_frame, cv2.COLOR_BGR2RGB)
 
         # Display the annotated frame in the placeholder
@@ -146,8 +144,6 @@ def display_annotated_video(video_path, fps_reduction=4):
                 report_filename = generate_report(class_name, confidence, image_filename)
                 st.write(f"Accident Detected: {class_name}, Confidence: {confidence:.2f}. Report saved: {report_filename}")
 
-        # Wait before displaying the next frame
-        time.sleep(frame_time)
 
     cap.release()
     st.write("Video playback complete.")
@@ -216,7 +212,8 @@ page = st.sidebar.radio("Select a page", ["Video & Prediction", "Reports"])
 
 if page == "Video & Prediction":
     st.title("CCTV Accident Detection")
-
+    with st.expander('Live Cam Detection'):
+        st.write('This is live cam example')
     # File uploader for video input
     uploaded_video = st.file_uploader("Upload a video", type=["mp4", "avi", "mov", "gif"])
 
