@@ -106,7 +106,7 @@ https://github.com/user-attachments/assets/07f46975-8bd2-42ef-81f9-763c386faa95
 This project is licensed under the MIT License.
 
 ## Acknowledgements
-
+- Thank you,  [Tuwaiq Academy](https://tuwaiq.edu.sa/) for your guidance and for fostering an environment that allowed us to successfully complete this project.
 - [YOLO (You Only Look Once)](https://github.com/ultralytics/yolov5)
 - [Streamlit](https://streamlit.io/)
 - [Google Generative AI](https://developers.google.com/generative-ai)
