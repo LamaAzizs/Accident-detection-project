@@ -18,6 +18,9 @@ if not os.path.exists('reports'):
 
 if not os.path.exists('report_images'):
     os.makedirs('report_images')
+    
+if not os.path.exists('temp'):
+    os.makedirs('temp')
 
 # Initialize the session state for accident reports if it doesn't exist
 if 'report_filenames' not in st.session_state:
